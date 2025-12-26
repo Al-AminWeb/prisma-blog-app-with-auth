@@ -6,8 +6,7 @@ const router = express.Router();
 
 
 
-router.post('/', postController.createPost
-)
+router.post('/', postController.createPost)
 
 
 
