@@ -1,0 +1,10 @@
+.idea
+.env
+node_modules
+dist
+.DS_Store
+build
+coverage
+.vscode
+
+/generated/prisma
