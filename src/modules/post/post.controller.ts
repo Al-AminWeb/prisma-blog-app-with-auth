@@ -22,7 +22,7 @@ const getAllPost = async (req: Request, res: Response) => {
 
         const result = await postService.getAllPost({
             search: searchString,
-            tags: []
+            tags
         });
         res.status(200).json(result);
     } catch (error) {
