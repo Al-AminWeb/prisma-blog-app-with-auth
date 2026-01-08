@@ -3,6 +3,14 @@ import {postController} from "./post.controller";
 
 const router = express.Router();
 
+router.get(
+    '/',
+    postController.getAllPost
+)
+
+
 router.post('/', postController.createPost)
+
+
 
 export const postRouter: Router = router;

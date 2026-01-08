@@ -11,6 +11,17 @@ const createPost = async (req: Request, res: Response) => {
     }
 }
 
+const getAllPost = async (req:Request, res:Response)=>{
+    try {
+        const result = await postService.getAllPost();
+        res.status(200).json(result);
+    }
+    catch (error) {
+        res.status(400).json({message: "Internal Server Error"})
+    }
+}
+
 export const postController = {
-    createPost
+    createPost,
+    getAllPost
 }
