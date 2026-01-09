@@ -18,7 +18,10 @@ const getAllPost = async (
         status,
         authorId,
         page,
-        limit
+        limit,
+        skip,
+        sortBy,
+        sortOrder
     }:
     {
         search: string | undefined,
@@ -28,6 +31,9 @@ const getAllPost = async (
         authorId: string | undefined
         page:number,
         limit:number
+        skip:number,
+        sortBy: string | undefined,
+        sortOrder:string | undefined
 
 
     }) => {
@@ -91,8 +97,13 @@ const getAllPost = async (
 
 
     const result = await prisma.post.findMany({
+        take: limit,
+        skip,
         where: {
             AND: andConditions
+        },
+        orderBy:{
+          sortBy: sortOrder
         }
     });
     return result;
