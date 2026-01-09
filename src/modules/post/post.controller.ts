@@ -14,7 +14,6 @@ const createPost = async (req: Request, res: Response) => {
     }
 };
 
-
 const getAllPost = async (req: Request, res: Response) => {
     try {
         const {search} = req.query;
@@ -35,7 +34,7 @@ const getAllPost = async (req: Request, res: Response) => {
 
         const authorId = req.query.authorId as string | undefined
 
-        const { page, limit, skip, sortBy, sortOrder } = paginationSortingHelper(req.query)
+        const {page, limit, skip, sortBy, sortOrder} = paginationSortingHelper(req.query)
 
 
         const result = await postService.getAllPost({
@@ -56,7 +55,25 @@ const getAllPost = async (req: Request, res: Response) => {
     }
 }
 
+const getPostById = async (req: Request, res: Response) => {
+    try {
+        const {postId} = req.params;
+
+        const result = await postService.getPostById(postId);
+        res.status(200).json(result);
+    } catch (error) {
+        // Simple, meaningful error handling
+        console.error('Get post error:', error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch post"
+        });
+    }
+}
+
 export const postController = {
     createPost,
-    getAllPost
+    getAllPost,
+    getPostById
 }
