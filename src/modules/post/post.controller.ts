@@ -57,18 +57,17 @@ const getAllPost = async (req: Request, res: Response) => {
 
 const getPostById = async (req: Request, res: Response) => {
     try {
-        const {postId} = req.params;
-
+        const { postId } = req.params;
+        if (!postId) {
+            throw new Error("Post Id is required!")
+        }
         const result = await postService.getPostById(postId);
-        res.status(200).json(result);
-    } catch (error) {
-        // Simple, meaningful error handling
-        console.error('Get post error:', error);
-
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch post"
-        });
+        res.status(200).json(result)
+    } catch (e) {
+        res.status(400).json({
+            error: "Post creation failed",
+            details: e
+        })
     }
 }
 
