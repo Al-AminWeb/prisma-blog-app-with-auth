@@ -96,7 +96,7 @@ const getAllPost = async (
     }
 
 
-    const result = await prisma.post.findMany({
+    const allPost = await prisma.post.findMany({
         take: limit,
         skip,
         where: {
@@ -106,7 +106,20 @@ const getAllPost = async (
             [sortBy]: sortOrder
         }: { createdAt: 'desc' }
     });
-    return result;
+    const total = await prisma.post.count({
+        where: {
+            AND: andConditions
+        }
+    })
+    return {
+        data: allPost,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        }
+    };
 }
 
 export const postService = {
