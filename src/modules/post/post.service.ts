@@ -29,11 +29,11 @@ const getAllPost = async (
         isFeatured: boolean | undefined,
         status: PostStatus | undefined,
         authorId: string | undefined
-        page:number,
-        limit:number
-        skip:number,
+        page: number,
+        limit: number
+        skip: number,
         sortBy: string | undefined,
-        sortOrder:string | undefined
+        sortOrder: string | undefined
 
 
     }) => {
@@ -102,9 +102,9 @@ const getAllPost = async (
         where: {
             AND: andConditions
         },
-        orderBy:{
-          sortBy: sortOrder
-        }
+        orderBy: sortBy && sortOrder ? {
+            [sortBy]: sortOrder
+        }: { createdAt: 'desc' }
     });
     return result;
 }
