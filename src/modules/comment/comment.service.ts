@@ -1,3 +1,4 @@
+import {prisma} from "../../lib/prisma";
 
 
 const createComment = async (payload:{
@@ -7,7 +8,22 @@ const createComment = async (payload:{
     parentCommentId?: string;
 
 }) => {
-    console.log('Creating a comment...',payload);
+    await prisma.post.findUniqueOrThrow({
+        where: {
+            id: payload.postId
+        }
+    })
+
+    if (payload.parentCommentId) {
+        await prisma.comment.findUniqueOrThrow({
+            where: {
+                id: payload.parentCommentId
+            }
+        })
+    }
+    return await prisma.comment.create({
+        data: payload
+    })
 }
 
 export  const  commentService = {
