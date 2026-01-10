@@ -9,4 +9,9 @@ router.post('/', auth(UserRole.ADMIN, UserRole.USER), commentController.createCo
 
 router.get('/:commentId', commentController.getCommentsById)
 
+router.get(
+    "/author/:authorId",
+    commentController.getCommentsByAuthor
+)
+
 export const commentRouter: Router = router;
