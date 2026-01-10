@@ -40,6 +40,20 @@ const getCommentsByAuthor = async (req: Request, res: Response) => {
 }
 
 
+const deleteComment = async (req: Request, res: Response) => {
+    try {
+        const user = req.user;
+        const {commentId} = req.params;
+        const result = await commentService.deleteComment(commentId as string, user?.id as string)
+        res.status(200).json(result)
+    } catch (e) {
+        console.log(e)
+        res.status(400).json({
+            error: "Comment delete failed!",
+            details: e
+        })
+    }
+}
 // const getAllPost = async (req: Request, res: Response) => {
 //     try {
 //         const {search} = req.query;
@@ -100,5 +114,6 @@ const getCommentsByAuthor = async (req: Request, res: Response) => {
 export const commentController = {
     createComment,
     getCommentsById,
-    getCommentsByAuthor
+    getCommentsByAuthor,
+    deleteComment
 }
