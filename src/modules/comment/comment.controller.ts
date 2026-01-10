@@ -1,9 +1,6 @@
 import {Request, Response} from "express";
 import {commentService} from "./comment.service";
 
-
-
-
 const createComment = async (req: Request, res: Response) => {
     try {
         const user = req.user;
@@ -15,6 +12,26 @@ const createComment = async (req: Request, res: Response) => {
         res.status(500).json({message: "Internal Server Error"});
     }
 };
+
+const getCommentsById = async (req: Request, res: Response) => {
+    try {
+        const { commentId } = req.params
+        const result = await commentService.getCommentById(commentId as string)
+        res.status(200).json(result)
+    } catch (e) {
+        res.status(400).json({
+            error: "Comment fetched failed",
+            details: e
+        })
+    }
+};
+
+
+
+
+
+
+
 
 // const getAllPost = async (req: Request, res: Response) => {
 //     try {
@@ -74,5 +91,6 @@ const createComment = async (req: Request, res: Response) => {
 // }
 
 export const commentController = {
-   createComment
+   createComment,
+    getCommentsById,
 }

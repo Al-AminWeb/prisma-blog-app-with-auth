@@ -7,4 +7,6 @@ const router = express.Router();
 
 router.post('/', auth(UserRole.ADMIN, UserRole.USER), commentController.createComment)
 
+router.get('/:commentId', commentController.getCommentsById)
+
 export const commentRouter: Router = router;
