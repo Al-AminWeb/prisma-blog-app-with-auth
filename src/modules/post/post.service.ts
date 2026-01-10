@@ -1,5 +1,5 @@
 import {prisma} from "../../lib/prisma";
-import {Post, PostStatus} from "../../../generated/prisma/client";
+import {CommentStatus, Post, PostStatus} from "../../../generated/prisma/client";
 import {PostWhereInput} from "../../../generated/prisma/models/Post";
 
 
@@ -124,12 +124,28 @@ const getAllPost = async (
 const getPostById = async (postId: string) => {
     return prisma.$transaction(async (tx) => {  // No await
         await tx.post.update({
-            where: { id: postId },
-            data: { viewCount: { increment: 1 } }
+            where: {id: postId},
+            data: {viewCount: {increment: 1}}
         })
 
         return tx.post.findUnique({  // Return from transaction
-            where: { id: postId }
+            where: {id: postId},
+            include: {
+                Comment: {
+                    where: {parentCommentId: null, status: CommentStatus.APPROVED},
+                    include: {
+                        replies: {
+                            where: {status: CommentStatus.APPROVED},
+                            include: {
+                                replies: {
+                                    where: {status: CommentStatus.APPROVED}
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
         })
     })
 }
