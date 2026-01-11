@@ -20,6 +20,7 @@ declare global {
     }
 }
 
+
 const auth = (...roles: UserRole[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -46,7 +47,7 @@ const auth = (...roles: UserRole[]) => {
                 id: session.user.id,
                 email: session.user.email,
                 name: session.user.name,
-                role: session.user.role as string,
+                role: session.user.role.toUpperCase(), // ✅ FIX
                 emailVerified: session.user.emailVerified
             }
 
