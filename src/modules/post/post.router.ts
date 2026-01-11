@@ -21,6 +21,12 @@ router.get(
     postController.getPostById
 )
 
+router.get(
+    "/stats",
+    auth(UserRole.ADMIN),
+    postController.getStats
+)
+
 router.post(
     '/',
     auth(UserRole.USER, UserRole.ADMIN),

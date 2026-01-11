@@ -245,7 +245,7 @@ const deletePost = async (postId: string, authorId: string, isAdmin: boolean) =>
         throw new Error("You are not the owner/creator of the post!")
     }
 
-    return await prisma.post.delete({
+    return  prisma.post.delete({
         where: {
             id: postId
         }
@@ -253,12 +253,62 @@ const deletePost = async (postId: string, authorId: string, isAdmin: boolean) =>
 
 }
 
+const getStats = async () => {
+    return  prisma.$transaction(async (tx) => {
+        const [
+            totalPosts,
+            publishedPosts,
+            draftPosts,
+            archivedPosts,
+            totalComments,
+            approvedComments,
+            totalUsers,
+            adminCount,
+            userCount,
+            viewsAggregate  // This will contain viewCount sum
+        ] = await Promise.all([
+            tx.post.count(),
+            tx.post.count({ where: { status: PostStatus.PUBLISHED } }),
+            tx.post.count({ where: { status: PostStatus.DRAFT } }),
+            tx.post.count({ where: { status: PostStatus.ARCHIVED } }),
+            tx.comment.count(),
+            tx.comment.count({ where: { status: CommentStatus.APPROVED } }),
+            tx.user.count(),
+            tx.user.count({ where: { role: "ADMIN" } }),
+            tx.user.count({ where: { role: "USER" } }),
+            tx.post.aggregate({
+                _sum: {
+                    viewCount: true  // Changed from 'views' to 'viewCount'
+                }
+            })
+        ]);
+
+        // Handle the nullable aggregate result
+        const totalViews = viewsAggregate._sum?.viewCount ?? 0;
+
+        return {
+            totalPosts,
+            publishedPosts,  // Fixed the typo
+            draftPosts,
+            archivedPosts,
+            totalComments,
+            approvedComments,  // Fixed variable name consistency
+            totalUsers,
+            adminCount,
+            userCount,
+            totalViews
+        };
+    });
+};
+
+
 export const postService = {
     createPost,
     getAllPost,
     getPostById,
     getMyPost,
     updatePost,
-    deletePost
+    deletePost,
+    getStats
 
 }
