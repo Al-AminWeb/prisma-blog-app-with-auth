@@ -8,13 +8,12 @@ import {commentRouter} from "./modules/comment/comment.router";
 
 const app: Application = express()
 
+app.use(express.json());
 app.use(cors({
     origin: process.env.APP_URL,
     credentials:true,
 }));
 app.all("/api/auth/*splat", toNodeHandler(auth));
-app.use(express.json());
-
 app.use('/post', postRouter);
 app.use("/comments",commentRouter)
 

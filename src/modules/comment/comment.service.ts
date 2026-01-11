@@ -18,7 +18,6 @@ const getCommentById = async (id: string) => {
     })
 }
 
-
 const getCommentsByAuthor = async (authorId: string) => {
     return await prisma.comment.findMany({
         where: {
@@ -35,7 +34,6 @@ const getCommentsByAuthor = async (authorId: string) => {
         }
     })
 }
-
 
 // 1. nijar comment delete korta parbe
 // login thakte hobe
@@ -62,7 +60,6 @@ const deleteComment = async (commentId: string, authorId: string) => {
     })
 }
 
-
 const createComment = async (payload: {
     content: string;
     authorId: string;
@@ -86,7 +83,10 @@ const createComment = async (payload: {
     })
 }
 
-const updateComment = async (commentId: string, data: { content?: string, status?: CommentStatus }, authorId: string) => {
+const updateComment = async (commentId: string, data: {
+    content?: string,
+    status?: CommentStatus
+}, authorId: string) => {
     const commentData = await prisma.comment.findFirst({
         where: {
             id: commentId,
@@ -110,10 +110,35 @@ const updateComment = async (commentId: string, data: { content?: string, status
     })
 }
 
+const moderateComment = async (id: string, data: { status: CommentStatus }) => {
+    const commentData = await prisma.comment.findUniqueOrThrow({
+        where: {
+            id
+        },
+        select: {
+            id: true,
+            status: true
+        }
+    });
+
+    if (commentData.status === data.status) {
+        throw new Error(`Your provided status (${data.status}) is already up to date.`)
+    }
+
+    return await prisma.comment.update({
+        where: {
+            id
+        },
+        data
+    })
+}
+
+
 export const commentService = {
     createComment,
     getCommentById,
     getCommentsByAuthor,
     deleteComment,
-    updateComment
+    updateComment,
+    moderateComment
 };
